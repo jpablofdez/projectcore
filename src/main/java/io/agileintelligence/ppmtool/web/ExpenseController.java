@@ -3,6 +3,7 @@ package io.agileintelligence.ppmtool.web;
 
 import io.agileintelligence.ppmtool.domain.Expense;
 import io.agileintelligence.ppmtool.domain.Project;
+import io.agileintelligence.ppmtool.domain.ProjectTask;
 import io.agileintelligence.ppmtool.domain.ni_team;
 import io.agileintelligence.ppmtool.domain.Category;
 import io.agileintelligence.ppmtool.exceptions.ResourceNotFoundException;
@@ -48,14 +49,26 @@ public class ExpenseController {
         return new ResponseEntity<Expense>(expense, HttpStatus.OK);
     }
 
- 	
-	// create employee rest api
 	//@PostMapping("/expense")
+    /*
     @PostMapping("")
 	public Expense createExpense(@RequestBody Expense expense) {
-		
+    	
+    	
 		return expenseService.createExpense(expense);
 	}
+    */
+    @PostMapping("")
+    public ResponseEntity<?> createExpense(@Valid @RequestBody Expense expense,
+                                            BindingResult result){
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if (errorMap != null) return errorMap;
+
+        Expense expen = expenseService.createExpense(expense);
+
+        return new ResponseEntity<Expense>(expen, HttpStatus.CREATED);
+
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteExpense(@PathVariable Long id, Principal principal){
     	expenseService.deleteExpense(id);

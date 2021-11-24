@@ -3,6 +3,7 @@ package io.agileintelligence.ppmtool.web;
 
 import io.agileintelligence.ppmtool.domain.Category;
 import io.agileintelligence.ppmtool.domain.Project;
+import io.agileintelligence.ppmtool.domain.ProjectTask;
 import io.agileintelligence.ppmtool.domain.ni_team;
 import io.agileintelligence.ppmtool.exceptions.ResourceNotFoundException;
 import io.agileintelligence.ppmtool.services.CategoryService;
@@ -51,11 +52,30 @@ public class CategoryController {
  	
 	// create employee rest api
 	//@PostMapping("/team")
+    /*
     @PostMapping("")
-	public Category createCategory(@RequestBody Category category) {
+	public Category createCategory2(@RequestBody Category category,BindingResult result) {
+    	
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if(errorMap!=null) 
+        	return errorMap;
 		
 		return categoryService.createCategory(category);
 	}
+    */
+    
+    // create Cat rest api
+ 	//@PostMapping("/category")
+    @PostMapping("")
+    public ResponseEntity<?> createCategory(@Valid @RequestBody Category category, BindingResult result){
+
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if(errorMap!=null) return errorMap;
+
+        Category catego = categoryService.createCategory(category);
+        return new ResponseEntity<Category>(catego, HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id, Principal principal){
     	categoryService.deleteCategory(id);
@@ -63,15 +83,19 @@ public class CategoryController {
     	
         return new ResponseEntity<String>("Project with ID: '"+id+"' was deleted", HttpStatus.OK);
     }
-
-   // @PutMapping("/category/{id}")
     @PatchMapping("/{id}")
-	public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails){
-		Category category = categoryService.getCategoryById(id);
+    public ResponseEntity<?> updateCategory(@Valid @RequestBody Category categoryDetails, BindingResult result,
+                                               @PathVariable Long id, Principal principal ){
+
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if (errorMap != null) return errorMap;
+
+        Category category = categoryService.getCategoryById(id);
 		
 		category.setName(categoryDetails.getName());
 		Category updatedCategory = categoryService.createCategory(category);
-		return ResponseEntity.ok(updatedCategory);
-	}
-	
+        return new ResponseEntity<Category>(updatedCategory,HttpStatus.OK);
+
+    }
+
 }

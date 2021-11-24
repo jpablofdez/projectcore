@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 
 @Entity
@@ -23,7 +24,7 @@ public class ni_team {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long team_id;
 	
-	
+	@NotBlank(message = "Team name is required")
 	@Column(name = "team_name")
 	private String team_name;
 

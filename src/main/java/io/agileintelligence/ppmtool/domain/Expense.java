@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -30,8 +31,10 @@ public class Expense {
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date expensedate;
 	
+	@NotBlank(message = "Expense description is required")
 	private String description;
 	
+	@NotBlank(message = "Location is required")
 	private String location;
 	
 	@ManyToOne

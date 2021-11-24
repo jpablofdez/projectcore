@@ -1,6 +1,7 @@
 package io.agileintelligence.ppmtool.web;
 
 
+import io.agileintelligence.ppmtool.domain.Category;
 import io.agileintelligence.ppmtool.domain.Project;
 import io.agileintelligence.ppmtool.domain.ni_team;
 import io.agileintelligence.ppmtool.exceptions.ResourceNotFoundException;
@@ -49,11 +50,23 @@ public class TeamController {
  	
 	// create employee rest api
 	//@PostMapping("/team")
+    /*
     @PostMapping("")
-	public ni_team createTeam(@RequestBody ni_team team) {
+	public ni_team createTeam1(@RequestBody ni_team team) {
 		
 		return teamService.createTeam(team);
 	}
+   */
+    @PostMapping("")
+    public ResponseEntity<?> createTeam(@Valid @RequestBody ni_team team, BindingResult result){
+
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if(errorMap!=null) return errorMap;
+
+        ni_team team1 = teamService.createTeam(team);
+        return new ResponseEntity<ni_team>(team1, HttpStatus.CREATED);
+    }
+   
     @DeleteMapping("/{team_id}")
     public ResponseEntity<?> deleteProject(@PathVariable Long team_id, Principal principal){
     	teamService.deleteTeam(team_id);
@@ -62,14 +75,19 @@ public class TeamController {
         return new ResponseEntity<String>("Project with ID: '"+team_id+"' was deleted", HttpStatus.OK);
     }
 
-   // @PutMapping("/team/{team_id}")
-    @PatchMapping("/{team_id}")
-	public ResponseEntity<ni_team> updateTeam(@PathVariable Long team_id, @RequestBody ni_team teamDetails){
-		ni_team team = teamService.getTeamById(team_id);
+	@PatchMapping("/{team_id}")
+	public ResponseEntity<?> updateTeam(@Valid @RequestBody ni_team teamDetails, BindingResult result,
+                                               @PathVariable Long team_id, Principal principal ){
+
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if (errorMap != null) return errorMap;
+
+        ni_team team = teamService.getTeamById(team_id);
 		
 		team.setTeam_name(teamDetails.getTeam_name());
-		ni_team updatedEmployee = teamService.createTeam(team);
-		return ResponseEntity.ok(updatedEmployee);
+		ni_team updatedteam = teamService.createTeam(team);
+        return new ResponseEntity<ni_team>(updatedteam,HttpStatus.OK);
+
 	}
-	
+
 }
