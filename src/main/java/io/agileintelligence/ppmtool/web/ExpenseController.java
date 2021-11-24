@@ -81,6 +81,7 @@ public class ExpenseController {
     @PatchMapping("/{id}")
 	public ResponseEntity<Expense> updateExpense(@PathVariable Long id, @RequestBody Expense expenseDetails){
 		Expense exp = expenseService.getExpenseById(id);
+		
 		Category cat = new Category();
 		ni_team nt = new ni_team();
 		
