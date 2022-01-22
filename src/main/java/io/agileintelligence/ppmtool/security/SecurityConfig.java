@@ -1,6 +1,8 @@
 package io.agileintelligence.ppmtool.security;
 
 import io.agileintelligence.ppmtool.services.CustomUserDetailsService;
+import io.agileintelligence.ppmtool.services.UserDetailsServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,9 @@ import static io.agileintelligence.ppmtool.security.SecurityConstants.SIGN_UP_UR
 )
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	UserDetailsServiceImpl userDetailsService;
+	
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
@@ -43,7 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
-
+    /*
+    @Override
+    protected void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+    */
     @Override
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     protected AuthenticationManager authenticationManager() throws Exception {

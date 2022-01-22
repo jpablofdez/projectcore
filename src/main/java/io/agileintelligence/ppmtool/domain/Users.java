@@ -1,6 +1,7 @@
 package io.agileintelligence.ppmtool.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,7 +11,9 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Users implements UserDetails {
@@ -30,6 +33,13 @@ public class Users implements UserDetails {
     private String confirmPassword;
     private Date create_At;
     private Date update_At;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(	name = "user_roles", 
+				joinColumns = @JoinColumn(name = "user_id"), 
+				inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles = new HashSet<>();
+    
 
     //OneToMany with Project
     @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
@@ -146,4 +156,11 @@ public class Users implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
 }

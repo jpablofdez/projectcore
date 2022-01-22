@@ -1,10 +1,16 @@
 package io.agileintelligence.ppmtool.web;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import io.agileintelligence.ppmtool.domain.Users;
 import io.agileintelligence.ppmtool.payload.JWTLoginSucessReponse;
 import io.agileintelligence.ppmtool.payload.LoginRequest;
 import io.agileintelligence.ppmtool.security.JwtTokenProvider;
 import io.agileintelligence.ppmtool.services.MapValidationErrorService;
+import io.agileintelligence.ppmtool.services.UserDetailsImpl;
 import io.agileintelligence.ppmtool.services.UserService;
 import io.agileintelligence.ppmtool.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static io.agileintelligence.ppmtool.security.SecurityConstants.TOKEN_PREFIX;
+
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -59,8 +67,13 @@ public class UserController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = TOKEN_PREFIX +  tokenProvider.generateToken(authentication);
-
-        return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt));
+        
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
+		List<String> roles = userDetails.getAuthorities().stream()
+				.map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+		userDetails.setRoles(roles);
+        return ResponseEntity.ok(new JWTLoginSucessReponse(true, jwt, userDetails));
     }
 
     @PostMapping("/register")
@@ -75,4 +88,6 @@ public class UserController {
 
         return  new ResponseEntity<Users>(newUser, HttpStatus.CREATED);
     }
+    
+    
 }

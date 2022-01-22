@@ -1,9 +1,11 @@
 package io.agileintelligence.ppmtool.security;
 
 import io.agileintelligence.ppmtool.domain.Users;
+import io.agileintelligence.ppmtool.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
 
 import java.util.Date;
 import java.util.HashMap;
@@ -18,17 +20,20 @@ public class JwtTokenProvider {
     //Generate the token
 
     public String generateToken(Authentication authentication){
-        Users user = (Users)authentication.getPrincipal();
+    	
+    	UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+    	
+       // Users user = (Users)authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
 
         Date expiryDate = new Date(now.getTime()+EXPIRATION_TIME);
 
-        String userId = Long.toString(user.getId());
+        String userId = Long.toString(userPrincipal.getId());
 
         Map<String,Object> claims = new HashMap<>();
-        claims.put("id", (Long.toString(user.getId())));
-        claims.put("username", user.getUsername());
-        claims.put("fullName", user.getFullName());
+        claims.put("id", (Long.toString(userPrincipal.getId())));
+        claims.put("username", userPrincipal.getUsername());
+        claims.put("fullName", userPrincipal.getFullName());
 
         return Jwts.builder()
                 .setSubject(userId)
@@ -38,7 +43,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
         }
-
+   
     //Validate the token
     public boolean validateToken(String token){
         try{
