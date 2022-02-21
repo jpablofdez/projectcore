@@ -31,6 +31,14 @@ public class Expense {
 	@JsonFormat(pattern = "yyyy-mm-dd")
 	private Date expensedate;
 	
+	/**
+	 * 
+	 */
+	@NotBlank(message = "Expense name is required")
+	private String name;
+	
+	private Double revenue;
+	
 	@NotBlank(message = "Expense description is required")
 	private String description;
 	

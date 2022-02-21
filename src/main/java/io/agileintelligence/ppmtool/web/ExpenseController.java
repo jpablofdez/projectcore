@@ -92,6 +92,11 @@ public class ExpenseController {
 		exp.setCategory(expenseDetails.getCategory());
 		exp.setTeam(expenseDetails.getTeam());
 		
+		exp.setName(expenseDetails.getName());
+		exp.setRevenue(expenseDetails.getRevenue());
+		
+	
+		
 		Expense updatedExpense = expenseService.createExpense(exp);
 		return ResponseEntity.ok(updatedExpense);	
 	}
