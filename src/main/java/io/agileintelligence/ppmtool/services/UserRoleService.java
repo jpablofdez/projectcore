@@ -41,13 +41,31 @@ public class UserRoleService {
     
     public List<Role> findRolesByUser_idNotIn(Long user_id){
     	List<Role> listRoles = roleRepository.findAll();
+    	List<Role> listRolesResult = roleRepository.findAll();
     	List<User_Roles> listUserroles = userRoleRepository.findAllByUser_id(user_id);
-    	
+    	/*
     	for(User_Roles uroles : listUserroles) {
-    		listRoles.remove(uroles.getUser().getId().intValue());
+    		int id = uroles.getRole().getId().intValue();
+    		
+    		listRoles.remove(id);
+    	}
+    	*/
+    	int i = 0;
+    	for(Role roles : listRoles) {
+    		int id = roles.getId().intValue();
+    		for(User_Roles uroles : listUserroles){
+    			int ids = uroles.getRole().getId().intValue();
+    			if(id == ids) {
+    				listRolesResult.remove(i);
+    				System.out.print("Role: "+roles.getName());
+    				i -= 1;
+    			}
+    		}
+    		i += 1;
+    		//listRoles.remove(id);
     	}
     	
-        return listRoles;
+        return listRolesResult;
     }
     
     // get all roles
