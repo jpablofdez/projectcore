@@ -38,7 +38,23 @@ public class UserRoleService {
     	
         return userRoleRepository.findAllByUser_id(user_id);
     }
+    
+    public List<Role> findRolesByUser_idNotIn(Long user_id){
+    	List<Role> listRoles = roleRepository.findAll();
+    	List<User_Roles> listUserroles = userRoleRepository.findAllByUser_id(user_id);
+    	
+    	for(User_Roles uroles : listUserroles) {
+    		listRoles.remove(uroles.getUser().getId().intValue());
+    	}
+    	
+        return listRoles;
+    }
+    
+    // get all roles
     public List<Role> findAllRoles(){
+    	Long id = (long) 1;
+    	
+    	
         return roleRepository.findAll();
     }
     

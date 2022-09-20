@@ -52,6 +52,12 @@ public class UserRoleController {
     	return userRoleList;
     }
     
+    @GetMapping("/rolenotin/{user_id}")
+    public List<Role> getAllRolesNot(@PathVariable Long user_id){
+    	List<Role> roleList = userRoleService.findRolesByUser_idNotIn(user_id);
+    	return roleList;
+    }
+    
     @GetMapping("/allRoles")
     public List<Role> getAllRoles(){
     	List<Role> roleList = userRoleService.findAllRoles();
